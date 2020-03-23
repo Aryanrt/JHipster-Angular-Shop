@@ -42,6 +42,18 @@ public class CacheConfiguration {
             createCache(cm, com.springio.store.domain.User.class.getName());
             createCache(cm, com.springio.store.domain.Authority.class.getName());
             createCache(cm, com.springio.store.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.springio.store.domain.Region.class.getName());
+            createCache(cm, com.springio.store.domain.Country.class.getName());
+            createCache(cm, com.springio.store.domain.Location.class.getName());
+            createCache(cm, com.springio.store.domain.Department.class.getName());
+            createCache(cm, com.springio.store.domain.Department.class.getName() + ".employees");
+            createCache(cm, com.springio.store.domain.Task.class.getName());
+            createCache(cm, com.springio.store.domain.Task.class.getName() + ".jobs");
+            createCache(cm, com.springio.store.domain.Employee.class.getName());
+            createCache(cm, com.springio.store.domain.Employee.class.getName() + ".jobs");
+            createCache(cm, com.springio.store.domain.Job.class.getName());
+            createCache(cm, com.springio.store.domain.Job.class.getName() + ".tasks");
+            createCache(cm, com.springio.store.domain.JobHistory.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }
