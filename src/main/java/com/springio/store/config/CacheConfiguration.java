@@ -54,6 +54,9 @@ public class CacheConfiguration {
             createCache(cm, com.springio.store.domain.Job.class.getName());
             createCache(cm, com.springio.store.domain.Job.class.getName() + ".tasks");
             createCache(cm, com.springio.store.domain.JobHistory.class.getName());
+            createCache(cm, com.springio.store.domain.Shop.class.getName());
+            createCache(cm, com.springio.store.domain.Shop.class.getName() + ".products");
+            createCache(cm, com.springio.store.domain.Product.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

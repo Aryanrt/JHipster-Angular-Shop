@@ -35,6 +35,14 @@ import { RouterModule } from '@angular/router';
       {
         path: 'job-history',
         loadChildren: () => import('./job-history/job-history.module').then(m => m.AnotheroneJobHistoryModule)
+      },
+      {
+        path: 'shop',
+        loadChildren: () => import('./shop/shop.module').then(m => m.AnotheroneShopModule)
+      },
+      {
+        path: 'product',
+        loadChildren: () => import('./product/product.module').then(m => m.AnotheroneProductModule)
       }
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ])

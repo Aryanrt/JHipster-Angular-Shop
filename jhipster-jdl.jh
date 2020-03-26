@@ -1,3 +1,14 @@
+entity Shop {
+	shopName String
+}
+
+entity Product {
+	productName String,
+	description String,
+	price Long,
+	quantity Long
+}
+
 entity Region {
 	regionName String
 }
@@ -86,11 +97,15 @@ relationship OneToMany {
 	/**
 	* Another side of the same relationship
 	*/
-	Employee{department}
+	Employee{department},
+	Shop to Product{shop},
+	//User to Shop{user(login)}
+
 }
 
 relationship ManyToOne {
 	Employee{manager} to Employee
+	Shop{user(login)} to User
 }
 
 // defining multiple oneToOne relationships
