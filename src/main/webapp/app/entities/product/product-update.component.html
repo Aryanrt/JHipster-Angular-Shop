@@ -39,7 +39,7 @@
                     <label class="form-control-label" for="field_shop">Shop</label>
                     <select class="form-control" id="field_shop" name="shop" formControlName="shop">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="shopOption.id === editForm.get('shop')!.value?.id ? editForm.get('shop')!.value : shopOption" *ngFor="let shopOption of shops; trackBy: trackById">{{ shopOption.id }}</option>
+                        <option [ngValue]="shopOption.id === editForm.get('shop')!.value?.id ? editForm.get('shop')!.value : shopOption" *ngFor="let shopOption of filterShops(); trackBy: trackById">{{ shopOption.id }}</option>
                     </select>
                 </div>
             </div>

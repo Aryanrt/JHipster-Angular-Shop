@@ -72,13 +72,13 @@
 
                             <button type="submit"
                                     [routerLink]="['/product', product.id, 'edit']"
-                                    class="btn btn-primary btn-sm">
+                                    class="btn btn-primary btn-sm"  [disabled]="!currentLogin || currentLogin != product.shop.user?.login">
                                 <fa-icon icon="pencil-alt"></fa-icon>
                                 <span class="d-none d-md-inline">Edit</span>
                             </button>
 
                             <button type="submit" (click)="delete(product)"
-                                    class="btn btn-danger btn-sm">
+                                    class="btn btn-danger btn-sm" [disabled]="!currentLogin || currentLogin != product.shop.user?.login">
                                 <fa-icon icon="times"></fa-icon>
                                 <span class="d-none d-md-inline">Delete</span>
                             </button>

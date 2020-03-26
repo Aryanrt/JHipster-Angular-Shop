@@ -8,6 +8,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IProduct } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
 import { ProductDeleteDialogComponent } from './product-delete-dialog.component';
+import { UserService } from 'app/core/user/user.service';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'jhi-product',
@@ -17,12 +19,15 @@ export class ProductComponent implements OnInit, OnDestroy {
   products?: IProduct[];
   eventSubscriber?: Subscription;
   currentSearch: string;
+  currentLogin: string | undefined;
 
   constructor(
     protected productService: ProductService,
     protected eventManager: JhiEventManager,
     protected modalService: NgbModal,
-    protected activatedRoute: ActivatedRoute
+    protected activatedRoute: ActivatedRoute,
+    private userService: UserService,
+    private accountService: AccountService
   ) {
     this.currentSearch =
       this.activatedRoute.snapshot && this.activatedRoute.snapshot.queryParams['search']
@@ -49,6 +54,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.currentLogin = account?.login;
+      //account?.login
+    });
     this.loadAll();
     this.registerChangeInProducts();
   }

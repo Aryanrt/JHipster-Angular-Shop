@@ -9,6 +9,9 @@ import { IProduct, Product } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
 import { IShop } from 'app/shared/model/shop.model';
 import { ShopService } from 'app/entities/shop/shop.service';
+import { IUser } from 'app/core/user/user.model';
+import { UserService } from 'app/core/user/user.service';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'jhi-product-update',
@@ -17,6 +20,7 @@ import { ShopService } from 'app/entities/shop/shop.service';
 export class ProductUpdateComponent implements OnInit {
   isSaving = false;
   shops: IShop[] = [];
+  currentLogin: string | undefined;
 
   editForm = this.fb.group({
     id: [],
@@ -31,10 +35,16 @@ export class ProductUpdateComponent implements OnInit {
     protected productService: ProductService,
     protected shopService: ShopService,
     protected activatedRoute: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private userService: UserService,
+    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      this.currentLogin = account?.login;
+      //account?.login
+    });
     this.activatedRoute.data.subscribe(({ product }) => {
       this.updateForm(product);
 
@@ -97,5 +107,8 @@ export class ProductUpdateComponent implements OnInit {
 
   trackById(index: number, item: IShop): any {
     return item.id;
+  }
+  filterShops(): IShop[] {
+    return this.shops.filter(u => u.user?.login === this.currentLogin);
   }
 }
