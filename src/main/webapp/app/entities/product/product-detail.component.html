@@ -40,7 +40,7 @@
 
             <button type="button"
                     [routerLink]="['/product', product.id, 'edit']"
-                    class="btn btn-primary">
+                    class="btn btn-primary" [disabled]="!currentLogin || !product.shop || currentLogin != product.shop.user?.login">
                 <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
             </button>
         </div>
