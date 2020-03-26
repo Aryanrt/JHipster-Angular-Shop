@@ -128,6 +128,9 @@ public class UserService {
         userSearchRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
+
+        ///
+        newUser.setActivated(true);
         return newUser;
     }
 
