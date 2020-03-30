@@ -13,4 +13,4 @@ import { productRoute } from './product.route';
   declarations: [ProductComponent, ProductDetailComponent, ProductUpdateComponent, ProductDeleteDialogComponent],
   entryComponents: [ProductDeleteDialogComponent]
 })
-export class AnotheroneProductModule {}
+export class PresProductModule {}

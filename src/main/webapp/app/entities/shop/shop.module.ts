@@ -13,4 +13,4 @@ import { shopRoute } from './shop.route';
   declarations: [ShopComponent, ShopDetailComponent, ShopUpdateComponent, ShopDeleteDialogComponent],
   entryComponents: [ShopDeleteDialogComponent]
 })
-export class AnotheroneShopModule {}
+export class PresShopModule {}

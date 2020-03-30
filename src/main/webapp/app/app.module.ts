@@ -6,7 +6,7 @@ import { AnotheroneSharedModule } from 'app/shared/shared.module';
 import { AnotheroneCoreModule } from 'app/core/core.module';
 import { AnotheroneAppRoutingModule } from './app-routing.module';
 import { AnotheroneHomeModule } from './home/home.module';
-import { AnotheroneEntityModule } from './entities/entity.module';
+import { PresEntityModule } from './entities/entity.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { MainComponent } from './layouts/main/main.component';
 import { NavbarComponent } from './layouts/navbar/navbar.component';
@@ -21,7 +21,7 @@ import { ErrorComponent } from './layouts/error/error.component';
     AnotheroneCoreModule,
     AnotheroneHomeModule,
     // jhipster-needle-angular-add-module JHipster will add new module here
-    AnotheroneEntityModule,
+    PresEntityModule,
     AnotheroneAppRoutingModule
   ],
   declarations: [MainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],
