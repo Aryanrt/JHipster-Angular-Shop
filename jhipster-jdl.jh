@@ -127,3 +127,234 @@ service all with serviceImpl except Employee, Job
 
 // Set an angular suffix
 // angularSuffix * with mySuffix
+
+
+
+
+package team24soft.minishopify.controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import team24soft.minishopify.models.Cart;
+import team24soft.minishopify.models.Product;
+import team24soft.minishopify.models.Shop;
+import team24soft.minishopify.models.User;
+import team24soft.minishopify.repositories.CartRepository;
+import team24soft.minishopify.repositories.ProductRepository;
+import team24soft.minishopify.repositories.ShopRepository;
+import team24soft.minishopify.repositories.UserRepository;
+
+@Controller()
+public class CartController {
+
+    @Autowired
+    ShopRepository shopRepository;
+    @Autowired
+    ProductRepository productRepository;
+    @Autowired
+    CartRepository cartRepository;
+    @Autowired
+    UserRepository userRepository;
+
+    @GetMapping("/addToCart")
+    public String addToCart(@RequestParam(name="name", required = true) String name,
+                            @RequestParam(name="title", required = true) String title,
+                            @RequestParam(name="number", required = true) int number,
+                            @RequestParam(name="userId", required = true) long userId, Model model) {
+
+        User user = userRepository.findById(userId);
+        model.addAttribute("user", user);
+        //boolean flag =false;
+
+        Cart cart;
+        //if this is the first item in the cart, then create a Cart object
+        if (cartRepository.count() == 0) {
+            cart = new Cart();
+            cartRepository.save(cart);
+        } else
+            cart = cartRepository.findAll().iterator().next();
+
+        Shop shop = shopRepository.findByName(name);
+
+        for (Product product : shop.getProducts()) {
+            if (product.getTitle().equals(title)) {
+                boolean alreadyInCart = false;
+                for (Product p : cart.contents.keySet()) {
+                    //if product is already in the cart, just add up the quantities
+                    if (p.getId() == product.getId()) {
+                        cartRepository.delete(cart);
+                        cart.contents.put(p, (int) Math.min(cart.contents.get(p) + number, product.getQuantity()));
+                        cartRepository.save(cart);
+                        alreadyInCart = true;
+                        break;
+                    }
+                }
+                if (alreadyInCart)
+                    break;
+
+                for (Product product1 : shop.getProducts()) {
+                    if (product1.getTitle().equalsIgnoreCase(title)) {
+                        cart.contents.put(product1, (int) Math.min(number, product1.getQuantity()));
+                        cartRepository.save(cart);
+                        break;
+                    }
+                }//for
+            }//if
+        }//for
+            model.addAttribute("shop", shop);
+
+            //model.addAttribute("shop", shop);
+            return "shopUser";
+
+            //return "shopUser";
+    }
+
+
+        @GetMapping("/removeFromCart")
+        public String removeFromCart(@RequestParam(name="title", required = true) String title,
+                                     @RequestParam(name="name", required = true) String name,
+                                     @RequestParam(name="userId", required = true) long userId, Model model){
+
+            User user = userRepository.findById(userId);
+            model.addAttribute("user", user);
+            //Shop shop = (Shop) model.getAttribute("shop");
+
+            Cart cart = cartRepository.findAll().iterator().next();
+            Product p = null;
+
+            for(Product product : shopRepository.findByName(name). getProducts())
+            {
+                if(product.getTitle().equalsIgnoreCase(title))
+                {
+                    //System.out.println("hererererer" +cart.contents.get(product) +" "+ prd);
+                    //productRepository.delete(product);
+                    product.setQuantity(product.getQuantity()+ cart.contents.get(product));
+                    cart.contents.remove(product);
+                    //cart.contents.put(product, (int) Math.min(number, product.getQuantity()));
+                    cartRepository.save(cart);
+                    productRepository.save(product);
+                    //shopRepository.
+                    break;
+                }
+            }
+
+            //model.addAttribute("shop", shop);
+            model.addAttribute("cart", cart);
+            return "cart";
+
+        }
+
+
+    @GetMapping("/viewCart")
+    public String viewCart(@RequestParam(name="userId", required = true) long userId,
+                           @RequestParam(name="name", required = true) String name, Model model){
+        User user = userRepository.findById(userId);
+        model.addAttribute("user", user);
+
+        Cart cart;
+        if(cartRepository.count() == 0 )
+        {
+            cart = new Cart();
+            cartRepository.save(cart);
+        }
+        else
+            cart = cartRepository.findAll().iterator().next();
+
+        model.addAttribute("name", name);
+        model.addAttribute("cart", cart);
+
+
+        return "cart";
+    }
+    @GetMapping("/purchaseConfirmed")
+    public String purchaseConfirmed(@RequestParam(name="userId", required = true) long userId, Model model){
+
+        User user = userRepository.findById(userId);
+        model.addAttribute("user", user);
+
+        Cart cart = cartRepository.findAll().iterator().next();
+
+        //update the productrepository with new contents
+        for(Product product: cart.contents.keySet())
+        {
+            productRepository.findByTitle(product.getTitle()).setQuantity(productRepository.findByTitle(product.getTitle())
+            .getQuantity() - cart.contents.get(product));
+        }
+
+        cartRepository.delete(cart);
+        return "purchaseConfirmed";
+    }
+
+}
+
+///
+
+
+
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="https://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Mini-Shopify</title>
+    <link rel = "icon" href ="/images/icon.png" type = "image/x-icon">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+<body>
+<header class="header">
+    <div>
+        <span><a th:href="@{/welcome(userId=${user.id})}"><img class="logo" title="Home" alt="shopify-logo" src="images/logo.png"></a></span>
+    </div>
+</header>
+<div class = "main-container">
+    <section>
+        <h2>This is your Cart</h2>
+        <table class="table shop-user-table">
+            <thead>
+            <tr class="row-header">
+                <th>Product Name</th><th>Description</th><th>Price</th><th>Quantity</th>
+            </tr>
+            </thead>
+            <tbody >
+            <tr class="row-body" th:each="product: ${cart.contents.keySet()}">
+                <form  action="#" th:action="@{/removeFromCart}" method="get">
+                    <input hidden th:name="title" th:value="${product.title}"/>
+                    <input hidden th:name="name" th:value="${name}"/>
+                    <input hidden th:name="userId" th:value="${user.id}"/>
+                    <input hidden th:name="description" th:value="${product.description}"/>
+                    <input hidden th:name="price" th:value="${product.price}"/>
+                    <td class ="cell-body" th:text="${product.title}"></td>
+                    <td class ="cell-body" th:text="${product.description}"></td>
+                    <td class ="cell-body" th:text="${product.price}"></td>
+                    <td class ="cell-body" th:text="${cart.contents.get(product)}"></td>
+                    <td class ="cell-body"><input class="button-cart" type="submit" value="Remove from Cart" /></td>
+                </form>
+            </tr>
+            </tbody>
+
+        </table>
+
+        <div class="buttons-back-container">
+            <span><a th:href="@{/purchaseConfirmed(userId=${user.id})}"><button>Purchase</button></a></span>
+            <span><a th:href="@{/shopList(userId=${user.id})}"><button>Go Back</button></a></span>
+            <span><a th:href="@{/signOut(userId=${user.id})}"><button>Sign Out</button></a></span>
+        </div>
+
+    </section>
+</div>
+
+
+<footer class="footer">
+    <span class="developed-by">Developed by <em><b>Team 24</b></em></span>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
